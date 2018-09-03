@@ -10,8 +10,13 @@ use App\Controller\AppController;
  *
  * @method \App\Model\Entity\User[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
  */
-class UsersController extends AppController
-{
+class UsersController extends AppController {
+
+
+	public function initialize() {
+		parent::initialize();
+		$this->Auth->allow(['logout', 'add']);
+	}
 
     /**
      * Index method
@@ -104,4 +109,21 @@ class UsersController extends AppController
 
         return $this->redirect(['action' => 'index']);
     }
+
+	public function login() {
+		if ($this->request->is('post')) {
+			$user = $this->Auth->identify();
+			if ($user) {
+				$this->Auth->setUser($user);
+				return $this->redirect($this->Auth->redirectUrl());
+			}
+
+			$this->Flash->error(__('Incorrect username or password'));
+		}
+	}
+
+	public function logout() {
+		$this->Falsh->success(__('Bye bye!'));
+		return $this->redirect($this->Auth->logout());
+	}
 }
