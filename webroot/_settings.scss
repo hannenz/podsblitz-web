@@ -1,0 +1,47 @@
+/**
+ * _settings.scss
+ */
+
+//////////////
+//  Colors  //
+//////////////
+
+$primary-color: #af1e23;
+$primary-color-soft: tint($primary-color, 80%); // #f7e8e8;
+$text-color: #303036;
+$text-color-light: lighten($text-color, 15%);
+$dark-grey: darken(#505852, 10%);
+$light-grey: tint($dark-grey, 90%);
+
+
+
+//////////////////
+//  Typography  //
+//////////////////
+
+$bourbon: (
+	"modular-scale-base": 1rem,
+	"modular-scale-ratio": $perfect-fourth
+);
+$vertical-unit: 1.3rem;
+$visual-base-line-grid-above: false;
+
+
+
+////////////////
+//  Measures  //
+////////////////
+
+$gutter: 1rem;
+$inner-bound-width: 60rem;
+
+
+
+//////////////////////////
+//  Options / Switches  //
+//////////////////////////
+
+$debug-base-line-grid: false;
+
+
+$border-radius: 0px;
