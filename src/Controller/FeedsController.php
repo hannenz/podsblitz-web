@@ -13,13 +13,29 @@ use App\Controller\AppController;
 class FeedsController extends AppController
 {
 
+
+	public function isAuthorized($user) {
+		$action = $this->request->getParam('action');
+		if (in_array($action, ['add', 'tags'])) {
+			return true;
+		}
+
+		$id = $this->request->getParams('pass.0');
+		if (!$id) {
+			return false;
+		}
+
+		$feed = $this->Feed->findById($id);
+		return $feed->user_id === $user['id'];
+	}
+
+
     /**
      * Index method
      *
      * @return \Cake\Http\Response|void
      */
-    public function index()
-    {
+    public function index() {
         $this->paginate = [
             'contain' => ['Users']
         ];
@@ -35,8 +51,7 @@ class FeedsController extends AppController
      * @return \Cake\Http\Response|void
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function view($id = null)
-    {
+    public function view($id = null) {
         $feed = $this->Feeds->get($id, [
             'contain' => ['Users']
         ]);

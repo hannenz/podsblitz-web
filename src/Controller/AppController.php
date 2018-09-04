@@ -37,8 +37,7 @@ class AppController extends Controller
      *
      * @return void
      */
-    public function initialize()
-    {
+    public function initialize() {
         parent::initialize();
 
         $this->loadComponent('RequestHandler', [
@@ -54,6 +53,7 @@ class AppController extends Controller
 		
 
 		$this->loadComponent('Auth', [
+			'authorize' => ['Controller'],
 			'authenticate' => [
 				'Form' => [
 					'fields' => [
@@ -66,11 +66,15 @@ class AppController extends Controller
 				'controller' => 'Users',
 				'action' => 'login'
 			],
-			'authorize' => ['Controller'],
 			'unauthorizedRedirect' => $this->referer()
 		]);
 
 		$this->Auth->allow(['display', 'view', 'index']);
 
     }
+
+	public function isAuthorized($usuer) {
+		return false;
+	}
+
 }

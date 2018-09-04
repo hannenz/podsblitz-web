@@ -2,6 +2,7 @@
 namespace App\Model\Entity;
 
 use Cake\ORM\Entity;
+use Cake\Utility\Xml;
 
 /**
  * Feed Entity
@@ -33,4 +34,18 @@ class Feed extends Entity
         'user_id' => true,
         'user' => true
     ];
+
+
+
+	public function __construct($properties = [], $options = []) {
+		parent::__construct($properties, $options);
+
+		$this->items = [];
+
+		if (!empty($this->url)) {
+			$feedXml = file_get_contents($this->url);
+			$xml = Xml::build($feedXml, ['return' => 'simplexml']);
+			$this->items = $xml->xpath('channel/item');
+		}
+	}
 }

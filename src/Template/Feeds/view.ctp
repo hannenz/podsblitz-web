@@ -39,4 +39,15 @@
             <td><?= $this->Number->format($feed->id) ?></td>
         </tr>
     </table>
+
+	<h4>Episodes</h4>
+	<table>
+			<?php foreach ($feed->items as $episode): ?>
+			<tr>
+				<td> <?= $episode->title; ?> </td>
+				<td> <?= $episode->description; ?> </td>
+				<td> <?= $episode->pubDate; ?> </td>
+			</tr>
+			<?php endforeach ?>
+	</table>
 </div>
