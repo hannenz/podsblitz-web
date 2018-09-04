@@ -109,4 +109,12 @@ class EpisodesController extends AppController
 
         return $this->redirect(['action' => 'index']);
     }
+
+
+
+	public function download($id = null) {
+		$episode = $this->Episodes->get($id);
+		echo $episode->link;
+		die ();
+	}
 }
