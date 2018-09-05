@@ -17,8 +17,7 @@ use Cake\ORM\Entity;
  *
  * @property \App\Model\Entity\Feed[] $feeds
  */
-class User extends Entity
-{
+class User extends Entity {
 
     /**
      * Fields that can be mass assigned using newEntity() or patchEntity().

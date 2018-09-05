@@ -3,6 +3,7 @@ namespace App\Model\Entity;
 
 use Cake\ORM\Entity;
 use Cake\Utility\Xml;
+use Cake\ORM\TableRegistry;
 
 /**
  * Feed Entity
@@ -15,25 +16,24 @@ use Cake\Utility\Xml;
  *
  * @property \App\Model\Entity\User $user
  */
-class Feed extends Entity
-{
+class Feed extends Entity {
 
-    /**
-     * Fields that can be mass assigned using newEntity() or patchEntity().
-     *
-     * Note that when '*' is set to true, this allows all unspecified fields to
-     * be mass assigned. For security purposes, it is advised to set '*' to false
-     * (or remove it), and explicitly make individual fields accessible as needed.
-     *
-     * @var array
-     */
-    protected $_accessible = [
-        'url' => true,
-        'title' => true,
-        'poster' => true,
-        'user_id' => true,
-        'user' => true
-    ];
+	/**
+	 * Fields that can be mass assigned using newEntity() or patchEntity().
+	 *
+	 * Note that when '*' is set to true, this allows all unspecified fields to
+	 * be mass assigned. For security purposes, it is advised to set '*' to false
+	 * (or remove it), and explicitly make individual fields accessible as needed.
+	 *
+	 * @var array
+	 */
+	protected $_accessible = [
+		'url' => true,
+		'title' => true,
+		'poster' => true,
+		'user_id' => true,
+		'user' => true
+	];
 
 
 
@@ -46,6 +46,30 @@ class Feed extends Entity
 			$feedXml = file_get_contents($this->url);
 			$xml = Xml::build($feedXml, ['return' => 'simplexml']);
 			$this->items = $xml->xpath('channel/item');
+
+			// $this->syncEpisodes();
+		}
+	}
+
+
+	/**
+	 * Update episodes from Feed
+	 *
+	 * @access public
+	 * @return void
+	 */
+	public function syncEpisodes() {
+
+		$EpisodesTable = TableRegistry::get('Episodes');
+
+		foreach ($this->items as $item) {
+			$episode = $EpisodesTable->findByGuid($item->guid)->first();
+			if (empty($episode)) {
+				$episode = $EpisodesTable->newEntity();
+			}
+			$EpisodesTable->patchEntity($episode, (array)$item);
+			$episode->feed_id = $this->id;
+			$EpisodesTable->save($episode);
 		}
 	}
 }

@@ -36,10 +36,12 @@ class FeedsController extends AppController
      * @return \Cake\Http\Response|void
      */
     public function index() {
-        $this->paginate = [
-            'contain' => ['Users']
-        ];
-        $feeds = $this->paginate($this->Feeds);
+        // $this->paginate = [
+        //     'contain' => ['Users']
+        // ];
+        // $feeds = $this->paginate($this->Feeds);
+
+		$feeds = $this->Feeds->findByUserId(1);
 
         $this->set(compact('feeds'));
     }
