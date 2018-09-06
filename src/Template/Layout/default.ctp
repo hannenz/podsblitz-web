@@ -26,32 +26,53 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
     </title>
     <?= $this->Html->meta('icon') ?>
 
-    <?= $this->Html->css('base.css') ?>
-    <?= $this->Html->css('style.css') ?>
+    <?= $this->Html->css('main.css') ?>
+	<?= $this->Html->script('vendor/jquery.min.js') ?>
+	<?= $this->Html->script('vendor/foundation.min.js') ?>
+	<?= $this->Html->script('main.min.js') ?>
 
     <?= $this->fetch('meta') ?>
     <?= $this->fetch('css') ?>
     <?= $this->fetch('script') ?>
 </head>
+
 <body>
-    <nav class="top-bar expanded" data-topbar role="navigation">
-        <ul class="title-area large-3 medium-4 columns">
-            <li class="name">
-                <h1><a href=""><?= $this->fetch('title') ?></a></h1>
-            </li>
-        </ul>
-        <div class="top-bar-section">
-            <ul class="right">
-                <li><a target="_blank" href="https://book.cakephp.org/3.0/">Documentation</a></li>
-                <li><a target="_blank" href="https://api.cakephp.org/3.0/">API</a></li>
-            </ul>
-        </div>
-    </nav>
+
+	<div class="title-bar" data-responsive-toggle="responsive-menu" data-hide-for="medium">
+	  <button class="menu-icon" type="button" data-toggle="responsive-menu"></button>
+	  <div class="title-bar-title">Menu</div>
+	</div>
+
+	<div class="top-bar" id="responsive-menu">
+		<div class="top-bar-left">
+			<ul class="dropdown menu" data-dropdown-menu>
+			<li class="menu-text"><?= $this->Html->link('Podsblitz', '/'); ?></li>
+				<li class="has-submenu">
+					<?= $this->Html->link(_('Subscriptions'), ['controller' => 'feeds', 'action' => 'index']) ?>
+					<ul class="submenu menu vertical" data-submenu>
+						<li><a href="#0">One</a></li>
+						<li><a href="#0">Two</a></li>
+						<li><a href="#0">Three</a></li>
+					</ul>
+				</li>
+				<li><a href="#0">Two</a></li>
+				<li><a href="#0">Three</a></li>
+			</ul>
+		</div>
+		<div class="top-bar-right">
+			<ul class="menu">
+				<li><input type="search" placeholder="Search"></li>
+				<li><button type="button" class="button">Search</button></li>
+			</ul>
+		</div>
+	</div>
+
     <?= $this->Flash->render() ?>
     <div class="container clearfix">
         <?= $this->fetch('content') ?>
     </div>
-    <footer>
+    <footer class="main-footer">
+		Podsblitz! &copy;2018 <?= $this->Html->link('hannenz', 'https://www.hannenz.de') ?>
     </footer>
 </body>
 </html>

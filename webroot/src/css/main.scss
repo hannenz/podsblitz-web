@@ -9,20 +9,22 @@
 @import "foundation-settings";
 @import "foundation";
 @import "motion-ui";
-@include motion-ui-transitions;
-@include motion-ui-animations;
 
-@include foundation-forms;
-@include foundation-menu;
-@include foundation-dropdown-menu;
-@include foundation-drilldown-menu;
-@include foundation-accordion-menu;
-@include foundation-button;
-@include foundation-breadcrumbs;
-@include foundation-card;
-@include foundation-callout;
-@include foundation-pagination;
-@include foundation-tabs;
+@include foundation-everything;
+// @include motion-ui-transitions;
+// @include motion-ui-animations;
+//
+// @include foundation-forms;
+// @include foundation-menu;
+// @include foundation-dropdown-menu;
+// @include foundation-drilldown-menu;
+// @include foundation-accordion-menu;
+// @include foundation-button;
+// @include foundation-breadcrumbs;
+// @include foundation-card;
+// @include foundation-callout;
+// @include foundation-pagination;
+// @include foundation-tabs;
 // @include foundation-orbit;
 
 @include foundation-xy-grid-classes(

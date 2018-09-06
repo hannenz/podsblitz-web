@@ -40,6 +40,7 @@ class FeedsController extends AppController
         //     'contain' => ['Users']
         // ];
         // $feeds = $this->paginate($this->Feeds);
+		// debug($this->Session->read('Auth.User.id'));
 
 		$feeds = $this->Feeds->findByUserId(1);
 
