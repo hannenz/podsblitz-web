@@ -10,22 +10,21 @@ use App\Controller\AppController;
  *
  * @method \App\Model\Entity\Feed[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
  */
-class FeedsController extends AppController
-{
+class FeedsController extends AppController {
 
 
 	public function isAuthorized($user) {
 		$action = $this->request->getParam('action');
-		if (in_array($action, ['add', 'tags'])) {
+		if (in_array($action, ['index'])) {
 			return true;
 		}
 
-		$id = $this->request->getParams('pass.0');
+		$id = $this->request->getParam('pass.0');
 		if (!$id) {
 			return false;
 		}
 
-		$feed = $this->Feed->findById($id);
+		$feed = $this->Feeds->findById($id)->first();
 		return $feed->user_id === $user['id'];
 	}
 
@@ -40,9 +39,8 @@ class FeedsController extends AppController
         //     'contain' => ['Users']
         // ];
         // $feeds = $this->paginate($this->Feeds);
-		// debug($this->Session->read('Auth.User.id'));
-
-		$feeds = $this->Feeds->findByUserId(1);
+		$userId = $this->Auth->user('id');
+		$feeds = $this->Feeds->findByUserId($userId);
 
         $this->set(compact('feeds'));
     }
@@ -58,6 +56,8 @@ class FeedsController extends AppController
         $feed = $this->Feeds->get($id, [
             'contain' => ['Users']
         ]);
+
+		$feed->fetch($feed->url);
 
         $this->set('feed', $feed);
     }

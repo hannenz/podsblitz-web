@@ -97,8 +97,7 @@ class UsersController extends AppController {
      * @return \Cake\Http\Response|null Redirects to index.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function delete($id = null)
-    {
+    public function delete($id = null) {
         $this->request->allowMethod(['post', 'delete']);
         $user = $this->Users->get($id);
         if ($this->Users->delete($user)) {
@@ -109,6 +108,8 @@ class UsersController extends AppController {
 
         return $this->redirect(['action' => 'index']);
     }
+
+
 
 	public function login() {
 		if ($this->request->is('post')) {
@@ -123,7 +124,7 @@ class UsersController extends AppController {
 	}
 
 	public function logout() {
-		$this->Falsh->success(__('Bye bye!'));
+		$this->Flash->success(__('Bye bye!'));
 		return $this->redirect($this->Auth->logout());
 	}
 }

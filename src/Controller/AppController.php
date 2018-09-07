@@ -25,8 +25,7 @@ use Cake\Event\Event;
  *
  * @link https://book.cakephp.org/3.0/en/controllers.html#the-app-controller
  */
-class AppController extends Controller
-{
+class AppController extends Controller {
 
     /**
      * Initialization hook method.
@@ -69,9 +68,10 @@ class AppController extends Controller
 			'unauthorizedRedirect' => $this->referer()
 		]);
 
-		$this->Auth->allow(['display', 'view', 'index']);
-
+		$this->Auth->allow(['display']);
     }
+
+
 
 	public function isAuthorized($usuer) {
 		return false;

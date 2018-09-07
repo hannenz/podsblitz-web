@@ -46,9 +46,27 @@ class Feed extends Entity {
 			$feedXml = file_get_contents($this->url);
 			$xml = Xml::build($feedXml, ['return' => 'simplexml']);
 			$this->items = $xml->xpath('channel/item');
-
 			// $this->syncEpisodes();
 		}
+	}
+
+
+
+	/**
+	 * Initially fetch a feed from its URL
+	 * e.g. Fetch image and description etc.
+	 * First time sync episodes
+	 *
+	 * @param string 	url
+	 */
+	public function fetch($url) {
+		$feedXml = file_get_contents($url);
+		$xml = Xml::build($feedXml);
+		$imageObjects = $xml->xpath('channel/image');
+		// Download image, save it
+
+		printf('<img width="200" src="%s" />', $imageObjects[0]->url);
+		die ();
 	}
 
 

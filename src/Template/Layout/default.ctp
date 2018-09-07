@@ -60,9 +60,16 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
 			</ul>
 		</div>
 		<div class="top-bar-right">
-			<ul class="menu">
+			<ul class="dropdown menu" data-dropdown-menu>
 				<li><input type="search" placeholder="Search"></li>
 				<li><button type="button" class="button">Search</button></li>
+				<li class="has-submenu">
+					<?= $this->Session->read('Auth.User.email'); ?>
+					<ul class="submenu menu vertical" data-submenu>
+						<li><?= $this->Html->link(_('Settings'), '#'); ?></li>
+						<li><?= $this->Html->link(_('Logout'), ['controller' => 'users', 'action' => 'logout']); ?></li>
+					</ul>
+				</li>
 			</ul>
 		</div>
 	</div>
