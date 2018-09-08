@@ -1,6 +1,11 @@
 /**
  * main.scss
  */
+//////////////////////////
+//  Nord color palette  //
+//////////////////////////
+@import "../../node_modules/nord/src/sass/nord.scss";
+ 
 
 //////////////////
 //  Foundation  //
@@ -47,3 +52,27 @@
 @import "bourbon";
 @import "settings";
 
+.container {
+	display: flex;
+	flex: 1;
+}
+
+*,*::before, *::after {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+body {
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+}
+
+.login-box {
+	margin: auto;
+}
+
+.main-footer {
+	background-color: $primary-color;
+}
