@@ -50,7 +50,7 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
 				<li class="has-submenu">
 					<?= $this->Html->link(_('Subscriptions'), ['controller' => 'feeds', 'action' => 'index']) ?>
 					<ul class="submenu menu vertical" data-submenu>
-						<li><a href="#0">One</a></li>
+					<li><?= $this->Html->link(_('Subscribe to a new Feed'), ['controller' => 'feeds', 'action' => 'subscribe']); ?></li>
 						<li><a href="#0">Two</a></li>
 						<li><a href="#0">Three</a></li>
 					</ul>
