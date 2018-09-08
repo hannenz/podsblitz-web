@@ -1,6 +1,6 @@
 /**
  * Default gulpfile for HALMA projects
- * 
+ *
  * Version 2017-08-22
  *
  * @see https://www.sitepoint.com/introduction-gulp-js/
@@ -59,7 +59,7 @@ var svgoOptions = {
 
 // project settings (enhance if you need to ;-) )
 var settings = {
-	
+
 	browserSync: {
 		proxy:	'https://' + pkg.name + '.localhost',
 		open: false,	// Don't open browser, change to "local" if you want or see https://browsersync.io/docs/options#option-open
@@ -69,7 +69,7 @@ var settings = {
 			cert: '/etc/ssl/certs/ssl-cert-snakeoil.pem'
 		}
 	},
-	
+
 	css: {
 		src: './src/css/**/*.scss',
 		dest: pkg.project_settings.prefix + 'css/',
@@ -96,7 +96,7 @@ var settings = {
 		dest:	pkg.project_settings.prefix + 'js/',
 		destFile:	'main.min.js'
 	},
-	
+
 	jsvendor: {
 		src:	[
 				'./src/js/vendor/**/*.js',
@@ -105,7 +105,7 @@ var settings = {
 		],
 		dest:	pkg.project_settings.prefix + 'js/vendor/'
 	},
-	
+
 	cssvendor: {
 		src:	'./src/css/vendor/**/*.css',
 		dest:	pkg.project_settings.prefix + 'css/vendor/'
@@ -115,11 +115,11 @@ var settings = {
 		src:	'./src/fonts/**/*',
 		dest:	pkg.project_settings.prefix + 'fonts/'
 	},
-	
+
 	images: {
 		src:	'./src/img/**/*',
 		dest:	pkg.project_settings.prefix + 'img/',
-		options: [ 
+		options: [
 			$.imagemin.optipng ({ optimizationLevel: 5 }),
 			$.imagemin.svgo (svgoOptions)
 		]
@@ -153,7 +153,7 @@ gulp.task ('clean:dist', function () {
 })
 
 /*
- *  Task: process SASS 
+ *  Task: process SASS
  */
 gulp.task('css', function (done) {
 	return gulp
@@ -166,7 +166,7 @@ gulp.task('css', function (done) {
 		.pipe($.header(banner, {pkg: pkg}))
 		.pipe(gulp.dest(settings.css.dest))
 		.pipe($.browserSync.stream())
-	;	
+	;
 	done();
 });
 
