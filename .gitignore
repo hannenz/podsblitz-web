@@ -42,3 +42,4 @@ nbproject/*
 webroot/dist/
 
 webroot/node_modules/
+webroot/media/
