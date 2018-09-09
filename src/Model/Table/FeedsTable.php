@@ -119,6 +119,34 @@ class FeedsTable extends Table {
 	}
 
 
+	/**
+	 * Import feeds from an opml file
+	 *
+	 * @param string					Full path to file
+	 * @return Array					Array of App\Model\Entity\Feed
+	 */
+	public function getFeedsFromOpml($file) {
+		$opml = @file_get_contents($file);
+		$xml = Xml::build($opml);
+		$outlines = $xml->xpath('*/outline');
+
+		$results = [];
+		foreach ($outlines as $outline) {
+
+			$url = (string)$outline['xmlUrl'];
+
+			if (preg_match('%^https?\://%', $url)) {
+
+				$feed = $this->newEntity();
+				$feed->fetchFromUrl($url);
+
+				$results[] = $feed;
+			}
+		}
+
+		return $results;
+	}
+
 
 	/**
 	 * Add a new feed as subscription for current user
@@ -167,7 +195,6 @@ class FeedsTable extends Table {
 				curl_exec($ch);
 				curl_close($ch);
 			}
-
 
 			$feed = $this->newEntity([
 				'url' => $url,

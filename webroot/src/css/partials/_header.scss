@@ -4,8 +4,23 @@
  * @author Johannes Braun <johannes.braun@hannenz.de>
  * @package podsblitz
  */
+
+.top-bar {
+	background-color: $nord4;
+}
+
 .brand {
+	background-color: $nord0;
+
+	a {
+		background-color: transparent !important;
+		padding-left: 0.5rem !important;
+		padding-right: 0.5rem !important;
+	}
+
 	img {
 		max-height: 3rem;
+		height: 3rem;
+		width: 3rem;
 	}
 }

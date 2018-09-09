@@ -1,0 +1,13 @@
+/**
+ * webroot/src/css/partials/_message.scss
+ *
+ * @author Johannes Braun <johannes.braun@hannenz.de>
+ * @package podsblitz
+ */
+
+.message {
+
+	&.error {
+		background-color: $alert-color;
+	}
+}

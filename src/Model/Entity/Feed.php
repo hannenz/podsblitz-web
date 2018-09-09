@@ -14,7 +14,6 @@ use Cake\ORM\TableRegistry;
  * @property string $poster
  * @property int $user_id
  *
- * @property \App\Model\Entity\User $user
  */
 class Feed extends Entity {
 
@@ -30,6 +29,7 @@ class Feed extends Entity {
 	protected $_accessible = [
 		'url' => true,
 		'title' => true,
+		'description' => true,
 		'poster' => true,
 		'user_id' => true,
 		'user' => true,
@@ -42,6 +42,36 @@ class Feed extends Entity {
 		parent::__construct($properties, $options);
 		return;
 
+	}
+
+
+
+	/**
+	 * Fetch feed data from its URL
+	 *
+	 * @param string		The feed's url
+	 * @return void
+	 */
+	public function fetchFromUrl($url) {
+
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_HEADER, 0);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+		curl_setopt($ch, CURLOPT_MAXREDIRS, 3);
+		$feedXml = curl_exec($ch);
+		curl_close($ch);
+		if ($feedXml === false) {
+		}
+
+		$xml = Xml::build($feedXml);
+
+		$this->url = $url;
+		$this->title = (string)$xml->channel->title;
+		$this->description = (string)$xml->channel->description;
+		$this->link = (string)$xml->cahnnel->link;
+		$this->published = new \Cake\I18n\Time((string)$xml->channel->pubDate);
 	}
 
 

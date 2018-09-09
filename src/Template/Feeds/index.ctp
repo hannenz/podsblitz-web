@@ -5,7 +5,7 @@
  */
 ?>
 <section class="feeds-view index">
-    <h3><?= __('Feeds') ?></h3>
+    <h3><?= sprintf('%u %s', $feeds->count(), __('Feeds')) ?></h3>
 
 	<ul class="feeds grid-x">
 		<?php foreach ($feeds as $feed): ?>

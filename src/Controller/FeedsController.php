@@ -142,15 +142,31 @@ class FeedsController extends AppController {
 
 
 	/**
-	 * Import from OPML (and maybe other sources?!?)
-	 *
+	 * Import feeds from an OPML file
 	 */
 	public function import() {
 
 		if ($this->request->is('post')) {
+
 			$feedsTable = TableRegistry::get('Feeds');
-			if (is_uploaded_file($this->request->data['opmlfile']['tmp_name'])) {
-				$feedsTable->import($this->request->data['opmlfile']['tmp_name'], $this->Auth->user('id'));
+
+			switch ($this->request->getData('step')) {
+
+				case 1:
+					$opmlFile = $this->request->data['opmlfile']['tmp_name'];
+					if (is_uploaded_file($opmlFile)) {
+						$feeds = $feedsTable->getFeedsFromOpml($opmlFile);
+						$this->set('feeds', $feeds);
+					}
+					break;
+
+				case 2:
+					$feedurls = $this->request->getData('feedurls');
+					foreach ($feedurls as $url) {
+						$feedsTable->subscribe($url, $this->Auth->user('id'));
+					}
+
+					break;
 			}
 		}
 	}

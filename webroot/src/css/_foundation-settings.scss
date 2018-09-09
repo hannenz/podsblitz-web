@@ -371,9 +371,8 @@ $drilldown-arrow-size: 6px;
 // ------------
 
 $dropdown-padding: 1rem;
-$dropdown-background: $body-background;
+$dropdown-background: skyblue;
 $dropdown-border: 1px solid $medium-gray;
-$dropdown-font-size: 1rem;
 $dropdown-width: 300px;
 $dropdown-radius: $global-radius;
 $dropdown-sizes: (
@@ -390,8 +389,8 @@ $dropdownmenu-arrow-color: $primary-color;
 $dropdownmenu-arrow-size: 6px;
 $dropdownmenu-arrow-padding: 1.1rem;
 $dropdownmenu-min-width: 200px;
-$dropdownmenu-background: transparent;
-$dropdownmenu-submenu-background: $white;
+$dropdownmenu-background: $nord4;
+$dropdownmenu-submenu-background: $nord4;
 $dropdownmenu-padding: $global-menu-padding;
 $dropdownmenu-nested-margin: 0;
 $dropdownmenu-submenu-padding: $dropdownmenu-padding;
@@ -845,8 +844,8 @@ $tooltip-radius: $global-radius;
 // 55. Top Bar
 // -----------
 
-$topbar-padding: 0.5rem;
-$topbar-background: $light-gray;
+$topbar-padding: 0rem;
+$topbar-background: $nord4;
 $topbar-submenu-background: $topbar-background;
 $topbar-title-spacing: 0.5rem 1rem 0.5rem 0;
 $topbar-input-width: 200px;
