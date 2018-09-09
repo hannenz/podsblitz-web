@@ -5,6 +5,9 @@ use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
+use Cake\Utility\Xml;
+
+use \App\Model\Entity\Feed;
 
 /**
  * Feeds Model
@@ -20,8 +23,7 @@ use Cake\Validation\Validator;
  * @method \App\Model\Entity\Feed[] patchEntities($entities, array $data, array $options = [])
  * @method \App\Model\Entity\Feed findOrCreate($search, callable $callback = null, $options = [])
  */
-class FeedsTable extends Table
-{
+class FeedsTable extends Table {
 
     /**
      * Initialize method
@@ -89,4 +91,99 @@ class FeedsTable extends Table
 
         return $rules;
     }
+
+
+
+	/**
+	 * Import feeds from an opml file
+	 *
+	 * @param string					Full path to file
+	 * @param int						user_id to import the feeds to
+	 * @return integer					Nr. of successfully imported feeds
+	 */
+	public function import($file, $userId) {
+		$opml = file_get_contents($file);
+		$xml = Xml::build($opml, ['return' => 'simplexml']);
+		$feeds = $xml->xpath('*/outline');
+		$n = 0;
+		foreach ($feeds as $feed) {
+			$url = (string)$feed['xmlUrl'];
+			if (preg_match('%^https?\://%', $url)) {
+				if ($this->subscribe($url, $userId)) {
+					$n++;
+				}
+			}
+		}
+
+		return $n;
+	}
+
+
+
+	/**
+	 * Add a new feed as subscription for current user
+	 *
+	 * @param string					The feed's url
+	 * @param int						user_id to subscribe this feed to
+	 * @return boolean					Success
+	 */
+	public function subscribe($url, $userId) {
+
+		// Check if user has subscribed to this url yet
+		$query = $this->find('all')
+				 ->where([
+					 'url' => $url,
+					 'user_id' => $userId
+				 ]);
+		$n = $query->count();
+		if ($n === 0) {
+
+			// Get the feed's xml
+			$feedXml = @file_get_contents($url);
+			if (!$feedXml) {
+				// TODO: Error handling!
+			}
+
+			$xml = Xml::build($feedXml);
+			$feedData = $xml->channel;
+
+
+			// Create the new feed's entity and persist it
+			// TODO: Fetch the image and save it in a web friendly compression / format
+
+
+			// Download poster image
+			$posterUrl = (string)$feedData->image->url;
+			if (!empty($posterUrl) && preg_match('%https?\://.*\.(.*)$%', $posterUrl, $matches)) {
+				$extension = $matches[1];
+				$posterFilename = WWW_ROOT . 'media' . DS . uniqid() . '.' . $extension;
+				$options = [
+					CURLOPT_FILE => fopen($posterFilename, 'w'),
+					CURLOPT_TIMEOUT => 60,
+					CURLOPT_URL => $posterUrl
+				];
+				$ch = curl_init();
+				curl_setopt_array($ch, $options);
+				curl_exec($ch);
+				curl_close($ch);
+			}
+
+
+			$feed = $this->newEntity([
+				'url' => $url,
+				'title' => (string)$feedData->title,
+				'description' => (string)$feedData->description,
+				'poster' => str_replace(WWW_ROOT, '', $posterFilename),
+				'user_id' => $userId
+			]);
+
+			if (!$this->save($feed)) {
+				debug($feed->getErrors());
+				die();
+			}
+
+			$feed->syncEpisodes();
+			return true;
+		}
+	}
 }

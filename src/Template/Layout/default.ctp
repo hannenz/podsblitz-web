@@ -46,17 +46,16 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
 	<div class="top-bar" id="responsive-menu">
 		<div class="top-bar-left">
 			<ul class="dropdown menu" data-dropdown-menu>
-			<li class="menu-text"><?= $this->Html->link('Podsblitz', '/'); ?></li>
+				<li class="menu-text brand"> <?= $this->Html->image('logo.svg', ['url' => '/']); ?> </li>
 				<li class="has-submenu">
-					<?= $this->Html->link(_('Subscriptions'), ['controller' => 'feeds', 'action' => 'index']) ?>
+					<?= $this->Html->link(__('Subscriptions'), ['controller' => 'feeds', 'action' => 'index']) ?>
 					<ul class="submenu menu vertical" data-submenu>
 					<li><?= $this->Html->link(_('Subscribe to a new Feed'), ['controller' => 'feeds', 'action' => 'subscribe']); ?></li>
-						<li><a href="#0">Two</a></li>
+						<li><?= $this->Html->link(__('Import'), ['controller' => 'feeds', 'action' => 'import']) ?></li>
 						<li><a href="#0">Three</a></li>
 					</ul>
 				</li>
-				<li><a href="#0">Two</a></li>
-				<li><a href="#0">Three</a></li>
+				<li><a href="#0">Player</a></li>
 			</ul>
 		</div>
 		<div class="top-bar-right">

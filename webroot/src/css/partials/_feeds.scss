@@ -1,0 +1,14 @@
+.feeds-view {
+}
+
+.feeds {
+	list-style: none;
+}
+
+.feed {
+
+	&__poster {
+		width: 100%;
+		max-width: 320px;
+	}
+}

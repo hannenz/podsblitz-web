@@ -45,6 +45,11 @@ class Episode extends Entity
         'is_favorite' => true,
         'created' => true,
         'modified' => true,
-        'feed' => true
+		'published' => true,
+		'feed' => true,
+		'filetype' => true,
+		'fileurl' => true,
+		'filesize' => true,
+		'poster' => true
     ];
 }

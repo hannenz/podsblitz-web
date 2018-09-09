@@ -32,42 +32,18 @@ class Feed extends Entity {
 		'title' => true,
 		'poster' => true,
 		'user_id' => true,
-		'user' => true
+		'user' => true,
+		'published' => true
 	];
 
 
 
 	public function __construct($properties = [], $options = []) {
 		parent::__construct($properties, $options);
+		return;
 
-		$this->items = [];
-
-		if (!empty($this->url)) {
-			$feedXml = file_get_contents($this->url);
-			$xml = Xml::build($feedXml, ['return' => 'simplexml']);
-			$this->items = $xml->xpath('channel/item');
-			// $this->syncEpisodes();
-		}
 	}
 
-
-
-	/**
-	 * Initially fetch a feed from its URL
-	 * e.g. Fetch image and description etc.
-	 * First time sync episodes
-	 *
-	 * @param string 	url
-	 */
-	public function fetch($url) {
-		$feedXml = file_get_contents($url);
-		$xml = Xml::build($feedXml);
-		$imageObjects = $xml->xpath('channel/image');
-		// Download image, save it
-
-		printf('<img width="200" src="%s" />', $imageObjects[0]->url);
-		die ();
-	}
 
 
 	/**
@@ -78,16 +54,91 @@ class Feed extends Entity {
 	 */
 	public function syncEpisodes() {
 
+		$maxItems = 10;
 		$EpisodesTable = TableRegistry::get('Episodes');
+		$this->items = [];
 
-		foreach ($this->items as $item) {
-			$episode = $EpisodesTable->findByGuid($item->guid)->first();
-			if (empty($episode)) {
-				$episode = $EpisodesTable->newEntity();
+		if (!empty($this->url)) {
+			$feedXml = file_get_contents($this->url);
+			$xml = Xml::build($feedXml);
+			$items = $xml->xpath('channel/item');
+
+			$n = 0;
+			foreach ($items as $item) {
+				if (empty((array)$item[0])) {
+					continue;
+				}
+
+				if ($n++ > $maxItems) {
+					break;
+				}
+
+				$episode = $EpisodesTable
+					->find('all')
+					->where([
+						'guid' => $item->guid,
+						'feed_id' => $this->id
+					])
+					->first()
+				;
+				if (empty($episode)) {
+					$episode = $EpisodesTable->newEntity();
+				}
+
+				$posterFilename = '';
+				$posterUrl = false;
+				$itunes = $item->children('http://www.itunes.com/dtds/podcast-1.0.dtd');
+
+				// foreach ($itunes->image->attributes('http://www.itunes.com/dtds/podcast-1.0.dtd') as $attr => $value) {
+				$attributes = $itunes->image->attributes();
+				if (is_array($attributes) && count($attributes) > 0) {
+					foreach ((array)$attributes as $attr => $value) {
+						if ($attr == 'href') {
+							// Download poster image
+							$posterUrl = (string)$value;
+							break;
+						}
+					}
+				}
+
+				if (!empty($posterUrl) && preg_match('%https?\://.*\.(.*)$%', $posterUrl, $matches)) {
+					$extension = $matches[1];
+					$posterFilename = WWW_ROOT . 'media' . DS . uniqid() . '.' . $extension;
+					$options = [
+						CURLOPT_FILE => fopen($posterFilename, 'w'),
+						CURLOPT_TIMEOUT => 60,
+						CURLOPT_URL => $posterUrl
+					];
+					$ch = curl_init();
+					curl_setopt_array($ch, $options);
+					curl_exec($ch);
+					curl_close($ch);
+				}
+
+
+				$EpisodesTable->patchEntity($episode, [
+					'title' => (string)$item->title,
+					'description' => (string)$item->description,
+					'guid' => (string)$item->guid,
+					'link' => (string)$item->link,
+					'author' => (string)$itunes->author,
+					'feed_id' => $this->id,
+					'filetype' => (string)$item->enclosure['type'],
+					'filesize' => (int)$item->enclosure['length'],
+					'fileurl' => (string)$item->enclosure['url'],
+					'duration' => (string)$itunes->duration,
+					'published' => new \Cake\I18n\Time((string)$item->pubDate),
+					'poster' => str_replace(WWW_ROOT, '', $posterFilename)
+				]);
+				// $episode->published = new \Cake\I18n\Time((string)$item->pubDate);
+
+
+				$EpisodesTable->save($episode);
+				// if (!$result) {
+				// 	debug($episode->getErrors());
+				// 	die();
+				// }
 			}
-			$EpisodesTable->patchEntity($episode, (array)$item);
-			$episode->feed_id = $this->id;
-			$EpisodesTable->save($episode);
 		}
 	}
 }

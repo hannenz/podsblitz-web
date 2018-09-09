@@ -14,7 +14,6 @@
 @import "foundation-settings";
 @import "foundation";
 @import "motion-ui";
-
 @include foundation-everything;
 // @include motion-ui-transitions;
 // @include motion-ui-animations;
@@ -45,6 +44,7 @@
   */
 );
 
+
 //////////////////
 //  Own styles  //
 //////////////////
@@ -56,6 +56,11 @@
 //  Partials  //
 ////////////////
 
+@import "partials/typography";
 @import "partials/common";
+@import "partials/header";
 @import "partials/footer";
 @import "partials/login";
+@import "partials/feeds";
+
+

@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use Cake\ORM\TableRegistry;
 
 /**
  * Feeds Controller
@@ -15,7 +16,7 @@ class FeedsController extends AppController {
 
 	public function isAuthorized($user) {
 		$action = $this->request->getParam('action');
-		if (in_array($action, ['index', 'subscribe'])) {
+		if (in_array($action, ['index', 'subscribe', 'import'])) {
 			return true;
 		}
 
@@ -54,10 +55,10 @@ class FeedsController extends AppController {
 	 */
 	public function view($id = null) {
 		$feed = $this->Feeds->get($id, [
-			'contain' => ['Users']
+			'contain' => ['Episodes', 'Users']
 		]);
 
-		$feed->fetch($feed->url);
+		// $feed->fetch($feed->url);
 
 		$this->set('feed', $feed);
 	}
@@ -111,6 +112,14 @@ class FeedsController extends AppController {
 		$this->set(compact('feed', 'users'));
 	}
 
+
+
+	public function syncEpisodes($id = null) {
+		$feed = $this->Feeds->get($id);
+		$feed->syncEpisodes();
+		$this->redirect(['action' => 'view', $id]);
+	}
+
 	/**
 	 * Delete method
 	 *
@@ -128,5 +137,21 @@ class FeedsController extends AppController {
 		}
 
 		return $this->redirect(['action' => 'index']);
+	}
+
+
+
+	/**
+	 * Import from OPML (and maybe other sources?!?)
+	 *
+	 */
+	public function import() {
+
+		if ($this->request->is('post')) {
+			$feedsTable = TableRegistry::get('Feeds');
+			if (is_uploaded_file($this->request->data['opmlfile']['tmp_name'])) {
+				$feedsTable->import($this->request->data['opmlfile']['tmp_name'], $this->Auth->user('id'));
+			}
+		}
 	}
 }
