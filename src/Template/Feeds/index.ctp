@@ -14,7 +14,7 @@
 				<a class="feed card cell" href="/feeds/view/<?= $feed->id ?>">
 					<?= $this->Html->image('/'.$feed->poster, ['class' => 'feed__poster']); ?>
 					<div class="card-section">
-						<h4><?= $feed->title ?></h4>
+						<h4 class="feed__title"><?= $feed->title ?></h4>
 					</div>
 				</a>
 			</li>

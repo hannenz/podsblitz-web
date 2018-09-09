@@ -63,6 +63,8 @@ class FeedsController extends AppController {
 		$this->set('feed', $feed);
 	}
 
+
+
 	/**
 	 * Add method
 	 *
@@ -75,8 +77,9 @@ class FeedsController extends AppController {
 
 		if ($this->request->is('post')) {
 
-
+			$feed->fetchFromUrl($this->request->getData('url'));
 			$feed = $this->Feeds->patchEntity($feed, $this->request->getData());
+
 			if ($this->Feeds->save($feed)) {
 				$this->Flash->success(__('The feed has been saved.'));
 
@@ -86,6 +89,9 @@ class FeedsController extends AppController {
 		}
 		$this->set(compact('feed'));
 	}
+
+
+
 
 	/**
 	 * Edit method
