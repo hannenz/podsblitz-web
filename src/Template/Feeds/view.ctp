@@ -4,7 +4,7 @@
  * @var \App\Model\Entity\Feed $feed
  */
 ?>
-<div class="feed">
+<div class="">
     <h3><?= h($feed->title) ?></h3>
 	<figure class="feed__poster">
 		<?= $this->Html->image('/'.$feed->poster); ?>

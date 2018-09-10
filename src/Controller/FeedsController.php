@@ -77,15 +77,20 @@ class FeedsController extends AppController {
 
 		if ($this->request->is('post')) {
 
+
 			$feed->fetchFromUrl($this->request->getData('url'));
-			$feed = $this->Feeds->patchEntity($feed, $this->request->getData());
+			try {
+				$feed = $this->Feeds->patchEntity($feed, $this->request->getData());
+				if ($this->Feeds->save($feed)) {
+					$this->Flash->success(__('The feed has been saved.'));
+					return $this->redirect(['action' => 'index']);
+				}
 
-			if ($this->Feeds->save($feed)) {
-				$this->Flash->success(__('The feed has been saved.'));
-
-				return $this->redirect(['action' => 'index']);
+				$this->Flash->error(__('The feed could not be saved. Please, try again.'));
 			}
-			$this->Flash->error(__('The feed could not be saved. Please, try again.'));
+			catch (\Exception $e) {
+				$this->Flash->error(__('Fetching the Feed failed'));
+			}
 		}
 		$this->set(compact('feed'));
 	}

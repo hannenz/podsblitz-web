@@ -7,14 +7,13 @@
 
 <div class="">
     <?= $this->Form->create($feed) ?>
-    <fieldset>
-        <legend><?= __('Subscribe to a new Feed') ?></legend>
-        <?php
-            echo $this->Form->control('url');
-            // echo $this->Form->control('title');
-            // echo $this->Form->control('poster');
-        ?>
-    </fieldset>
-    <?= $this->Form->button(__('Submit')) ?>
+	<div class="input-group">
+		<label class="input-group-label" for="url">URL</label>
+		<input class="input-group-field" id="url" name="url" type="text" size="48" autofocus />
+		<div class="input-group-button">
+			<input type="submit" class="button" value="<?= __('Subscribe') ?>" />
+		</div>
+	</div>
+
     <?= $this->Form->end() ?>
 </div>

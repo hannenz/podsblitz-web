@@ -33,7 +33,8 @@ class Feed extends Entity {
 		'poster' => true,
 		'user_id' => true,
 		'user' => true,
-		'published' => true
+		'link' => true,
+		'language' => true
 	];
 
 
@@ -51,6 +52,7 @@ class Feed extends Entity {
 	 *
 	 * @param string		The feed's url
 	 * @return void
+	 * @throws Exception
 	 */
 	public function fetchFromUrl($url) {
 
@@ -63,6 +65,7 @@ class Feed extends Entity {
 		$feedXml = curl_exec($ch);
 		curl_close($ch);
 		if ($feedXml === false) {
+			throw new \Exception (sprintf("GET %s failed", $url));
 		}
 
 		$xml = Xml::build($feedXml);
@@ -70,8 +73,30 @@ class Feed extends Entity {
 		$this->url = $url;
 		$this->title = (string)$xml->channel->title;
 		$this->description = (string)$xml->channel->description;
-		$this->link = (string)$xml->cahnnel->link;
+		$this->link = (string)$xml->channel->link;
 		$this->published = new \Cake\I18n\Time((string)$xml->channel->pubDate);
+
+		$imageUrl = (string)$xml->channel->image->url;
+		if (preg_match('%^https?\://.*(\..*)$%', $imageUrl, $matches)) {
+
+			$extension = $matches[1];
+			$ch = curl_init();
+			curl_setopt($ch, CURLOPT_URL, $imageUrl);
+			curl_setopt($ch, CURLOPT_HEADER, 0);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+			curl_setopt($ch, CURLOPT_MAXREDIRS, 3);
+			$data = curl_exec($ch);
+			$error = curl_error($ch);
+			curl_close($ch);
+
+			$dest = WWW_ROOT . "media" . DS . uniqid() . $extension;
+			if (@file_put_contents($dest, $data) === false) {
+				throw new \Exception("file_put_contents() failed");
+			}
+
+			$this->poster = str_replace(WWW_ROOT, '' , $dest);
+		}
 	}
 
 
