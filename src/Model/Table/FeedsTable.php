@@ -44,7 +44,9 @@ class FeedsTable extends Table {
             'joinType' => 'INNER'
         ]);
 
-		$this->hasMany('Episodes');
+		$this->hasMany('Episodes', [
+			'sort' => ['published' => 'DESC']
+		]);
     }
 
     /**

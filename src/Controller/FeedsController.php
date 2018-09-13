@@ -55,7 +55,7 @@ class FeedsController extends AppController {
 	 */
 	public function view($id = null) {
 		$feed = $this->Feeds->get($id, [
-			'contain' => ['Episodes', 'Users']
+			'contain' => ['Episodes', 'Users'],
 		]);
 
 		// $feed->fetch($feed->url);

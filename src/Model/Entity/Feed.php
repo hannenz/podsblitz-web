@@ -118,6 +118,7 @@ class Feed extends Entity {
 			$xml = Xml::build($feedXml);
 			$items = $xml->xpath('channel/item');
 
+
 			$n = 0;
 			foreach ($items as $item) {
 				if (empty((array)$item[0])) {
@@ -131,7 +132,7 @@ class Feed extends Entity {
 				$episode = $EpisodesTable
 					->find('all')
 					->where([
-						'guid' => $item->guid,
+						'guid' => (string)$item->guid,
 						'feed_id' => $this->id
 					])
 					->first()
@@ -140,7 +141,6 @@ class Feed extends Entity {
 					$episode = $EpisodesTable->newEntity();
 				}
 
-				$posterFilename = '';
 				$posterUrl = false;
 				$itunes = $item->children('http://www.itunes.com/dtds/podcast-1.0.dtd');
 
@@ -156,19 +156,42 @@ class Feed extends Entity {
 					}
 				}
 
+				// If no itunes image, then search in description for an html img tag
+				if (empty($posterUrl)) {
+					if (preg_match('/\<img.*src\=\"(.*?)[\?\&\#].*\"/', (string)$item->description, $matches)) {
+						$posterUrl = $matches[1];
+					}
+				}
+
+				$posterFilename = '';
 				if (!empty($posterUrl) && preg_match('%https?\://.*\.(.*)$%', $posterUrl, $matches)) {
 					$extension = $matches[1];
-					$posterFilename = WWW_ROOT . 'media' . DS . uniqid() . '.' . $extension;
-					$options = [
-						CURLOPT_FILE => fopen($posterFilename, 'w'),
-						CURLOPT_TIMEOUT => 60,
-						CURLOPT_URL => $posterUrl
-					];
-					$ch = curl_init();
-					curl_setopt_array($ch, $options);
-					curl_exec($ch);
-					curl_close($ch);
+					$posterFilename = WWW_ROOT . 'media' . DS . sha1((string)$item->guid) . '.' . $extension;
+					if (!file_exists($posterFilename)) {
+						// $posterFilename = WWW_ROOT . 'media' . DS . uniqid() . '.' . $extension;
+						$options = [
+							CURLOPT_FILE => fopen($posterFilename, 'w'),
+							CURLOPT_TIMEOUT => 60,
+							CURLOPT_URL => $posterUrl
+						];
+						$ch = curl_init();
+						curl_setopt_array($ch, $options);
+						curl_exec($ch);
+						curl_close($ch);
+					}
 				}
+
+				// Duration: convert hh:mm:ss string to int (seconds)
+				$duration = 0;
+				$str = (string)$itunes->duration;
+				// if (preg_match('/(\d{1,2}\:)?(\d{1,2}\:)?(\d{1,2})?/', $str, $matches)) {
+				if (preg_match('/^(?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)$/', $str, $matches)) {
+					$hours = (int)$matches[1];
+					$minutes = (int)$matches[2];
+					$seconds = (int)$matches[3];
+					$duration = 3600 * $hours + 60 * $minutes + $seconds;
+				}
+
 
 
 				$EpisodesTable->patchEntity($episode, [
@@ -181,18 +204,18 @@ class Feed extends Entity {
 					'filetype' => (string)$item->enclosure['type'],
 					'filesize' => (int)$item->enclosure['length'],
 					'fileurl' => (string)$item->enclosure['url'],
-					'duration' => (string)$itunes->duration,
+					'duration' => $duration,
 					'published' => new \Cake\I18n\Time((string)$item->pubDate),
 					'poster' => str_replace(WWW_ROOT, '', $posterFilename)
 				]);
 				// $episode->published = new \Cake\I18n\Time((string)$item->pubDate);
 
 
-				$EpisodesTable->save($episode);
-				// if (!$result) {
-				// 	debug($episode->getErrors());
-				// 	die();
-				// }
+				$result = $EpisodesTable->save($episode);
+				if (!$result) {
+					debug($episode->getErrors());
+					die();
+				}
 			}
 		}
 	}

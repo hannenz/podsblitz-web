@@ -4,7 +4,7 @@
  * @var \App\Model\Entity\Feed $feed
  */
 ?>
-<div class="">
+<div class="xfeed">
     <h3><?= h($feed->title) ?></h3>
 	<figure class="feed__poster">
 		<?= $this->Html->image('/'.$feed->poster); ?>
@@ -13,18 +13,27 @@
 	<small><code><?= $feed->url ?></code></small>
 
 	<h4><?= __('Episodes') ?></h4>
+	<p><?php echo $this->Html->link('Sync episodes', ['controller' => 'feeds', 'action' => 'syncEpisodes', $feed->id], ['class' => 'button']); ?></p>
 	<table>
 		<?php if (!empty($feed->episodes)): ?>
 			<?php foreach ($feed->episodes as $episode): ?>
 			<tr>
-				<td> <?= $episode->title; ?> </td>
-				<td> <?= $episode->description; ?> </td>
-				<td> <?= $episode->duration ?></td>
+				<td style="width:140px; vertical-align: top"> <?= $this->Html->image('/' . $episode->poster, ['style' => 'display: block; width: 140px']); ?> </td>
+				<td>
+
+					<div style="color:#a0a2a4"><?= $episode->published->format('d.m.Y') ?> &middot; <?= $episode->published->format('H:i'); ?> Uhr</div>
+					<h4><?= $episode->title; ?></h4>
+					</div>
+						<?= h(strip_tags($episode->description)); ?>
+					</div>
+					<div>
+						<audio src="<?= $episode->fileurl ?>" type="<?= $episode->filetype ?>" controls></audio>
+					</div>
+
+				 </td>
 				<td> <?php printf("%02u:%02u", $episode->duration / 3600, $episode->duration / 60 % 60); ?>
-				<td> Veröffentlicht am <?= $episode->published->format('D, d.m.Y H:i'); ?> </td>
 			</tr>
 			<?php endforeach ?>
 		<?php endif ?>
 	</table>
-	<?php echo $this->Html->link('Sync episodes', ['controller' => 'feeds', 'action' => 'syncEpisodes', $feed->id], ['class' => 'button']); ?>
 </div>
