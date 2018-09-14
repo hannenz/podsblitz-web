@@ -181,4 +181,15 @@ class FeedsController extends AppController {
 			}
 		}
 	}
+
+
+
+	public function fetchPoster($id) {
+		$feed = $this->Feeds->get($id, [
+			'contain' => []
+		]);
+		$feed->fetchPoster();
+		$this->Feeds->save($feed);
+		$this->redirect(['action' => 'view', $id]);
+	}
 }

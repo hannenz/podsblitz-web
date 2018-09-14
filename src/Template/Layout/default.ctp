@@ -15,7 +15,7 @@
 
 $cakeDescription = 'CakePHP: the rapid development php framework';
 ?>
-<!DOCTYPE html>
+<!doctype html>
 <html>
 <head>
     <?= $this->Html->charset() ?>
@@ -46,7 +46,7 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
 	<div class="top-bar" id="responsive-menu">
 		<div class="top-bar-left">
 			<ul class="dropdown menu" data-dropdown-menu>
-				<li class="menu-text brand"> <?= $this->Html->image('logo2.svg', ['url' => '/']); ?> </li>
+				<li class="menu-text brand"> <?= $this->Html->image('/dist/img/logo2.svg', ['url' => '/']); ?> </li>
 				<li class="has-submenu">
 					<?= $this->Html->link(__('Subscriptions'), ['controller' => 'feeds', 'action' => 'index']) ?>
 					<ul class="submenu menu vertical" data-submenu>

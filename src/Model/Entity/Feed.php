@@ -4,6 +4,7 @@ namespace App\Model\Entity;
 use Cake\ORM\Entity;
 use Cake\Utility\Xml;
 use Cake\ORM\TableRegistry;
+use Cake\Http\Client;
 
 /**
  * Feed Entity
@@ -56,19 +57,12 @@ class Feed extends Entity {
 	 */
 	public function fetchFromUrl($url) {
 
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, $url);
-		curl_setopt($ch, CURLOPT_HEADER, 0);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-		curl_setopt($ch, CURLOPT_MAXREDIRS, 3);
-		$feedXml = curl_exec($ch);
-		curl_close($ch);
-		if ($feedXml === false) {
-			throw new \Exception (sprintf("GET %s failed", $url));
+		try {
+			$xml = $this->fetchXml();
 		}
-
-		$xml = Xml::build($feedXml);
+		catch(\Exception $e) {
+			// TODO: error handling
+		}
 
 		$this->url = $url;
 		$this->title = (string)$xml->channel->title;
@@ -76,6 +70,33 @@ class Feed extends Entity {
 		$this->link = (string)$xml->channel->link;
 		$this->published = new \Cake\I18n\Time((string)$xml->channel->pubDate);
 
+		$this->fetchPoster();
+	}
+
+
+
+	public function fetchXml() {
+
+		if (empty($this->url)) {
+			throw new \Exception('No feed url available');
+		}
+
+		$http = new Client();
+		$response = $http->get($this->url);
+		try {
+			$xml = Xml::build($response->body);
+		}
+		catch (\Cake\Utility\Exception\XmlException $e) {
+			throw new \Exception(sprintf("Xml::build failed"));
+		}
+		return $xml;
+	}
+
+
+
+	public function fetchPoster() {
+
+		$xml = $this->fetchXml();
 		$imageUrl = (string)$xml->channel->image->url;
 		if (preg_match('%^https?\://.*(\..*)$%', $imageUrl, $matches)) {
 
@@ -98,6 +119,7 @@ class Feed extends Entity {
 			$this->poster = str_replace(WWW_ROOT, '' , $dest);
 		}
 	}
+
 
 
 

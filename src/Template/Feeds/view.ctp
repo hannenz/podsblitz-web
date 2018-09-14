@@ -14,6 +14,10 @@
 
 	<h4><?= __('Episodes') ?></h4>
 	<p><?php echo $this->Html->link('<svg class="icon"><use xlink:href="/dist/img/ikonate.svg#refresh"></use></svg> Sync episodes', ['controller' => 'feeds', 'action' => 'syncEpisodes', $feed->id], ['class' => 'button', 'escape' => false]); ?></p>
+	<p>
+		<?php echo $this->Html->link('Fetch poster', ['controller' => 'feeds', 'action' => 'fetchPoster', $feed->id], ['class' => 'button']); ?>
+		<?php echo $this->Html->link('Sync episodes', ['controller' => 'feeds', 'action' => 'syncEpisodes', $feed->id], ['class' => 'button']); ?>
+	</p>
 	<table>
 		<?php if (!empty($feed->episodes)): ?>
 			<?php foreach ($feed->episodes as $episode): ?>
