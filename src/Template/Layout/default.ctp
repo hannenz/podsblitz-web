@@ -63,7 +63,7 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
 				<li><input type="search" placeholder="Search"></li>
 				<li><button type="button" class="button">Search</button></li>
 				<li class="has-submenu">
-					<?= $this->Session->read('Auth.User.email'); ?>
+					<svg class="icon"><use xlink:href="/dist/img/ikonate.svg#user"></use></svg> <?= $this->Session->read('Auth.User.email'); ?>
 					<ul class="submenu menu vertical" data-submenu>
 						<li><?= $this->Html->link(_('Settings'), '#'); ?></li>
 						<li><?= $this->Html->link(_('Logout'), ['controller' => 'users', 'action' => 'logout']); ?></li>

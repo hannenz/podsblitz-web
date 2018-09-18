@@ -13,7 +13,7 @@
 	<small><code><?= $feed->url ?></code></small>
 
 	<h4><?= __('Episodes') ?></h4>
-	<p><?php echo $this->Html->link('Sync episodes', ['controller' => 'feeds', 'action' => 'syncEpisodes', $feed->id], ['class' => 'button']); ?></p>
+	<p><?php echo $this->Html->link('<svg class="icon"><use xlink:href="/dist/img/ikonate.svg#refresh"></use></svg> Sync episodes', ['controller' => 'feeds', 'action' => 'syncEpisodes', $feed->id], ['class' => 'button', 'escape' => false]); ?></p>
 	<table>
 		<?php if (!empty($feed->episodes)): ?>
 			<?php foreach ($feed->episodes as $episode): ?>
@@ -22,6 +22,11 @@
 				<td>
 
 					<div style="color:#a0a2a4"><?= $episode->published->format('d.m.Y') ?> &middot; <?= $episode->published->format('H:i'); ?> Uhr</div>
+					<div>
+						<a href="#"><svg class="icon"><use xlink:href="/dist/img/ikonate.svg#download"></use></svg> Download</a>
+						<a href="#"><svg class="icon"><use xlink:href="/dist/img/ikonate.svg#favourite"></use></svg> Favorite</a>
+					</div>
+
 					<h4><?= $episode->title; ?></h4>
 					</div>
 						<?= h(strip_tags($episode->description)); ?>

@@ -46,6 +46,7 @@
   },
   "dependencies": {
     "foundation-sites": "^6.5.0-rc.2",
+    "ikonate": "^1.0.0",
     "nord": "^0.2.1"
   }
 }
