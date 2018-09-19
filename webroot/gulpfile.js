@@ -42,10 +42,10 @@ const banner = [
 
 
 //array of gulp task names that should be included in "gulp build" task
-var build = ['clean:dist', 'js', 'jsvendor', 'css', 'cssvendor', 'images', 'sprite', 'icons', 'fonts'];
+var build = ['clean:dist', 'js', 'jsvendor', 'css', 'cssvendor', 'images', 'sprite', 'icons', 'svgvendor', 'fonts'];
 
 
-
+		
 var svgoOptions = {
 	plugins: [
 		{ cleanupIDs: false },
@@ -111,6 +111,11 @@ var settings = {
 		dest:	pkg.project_settings.prefix + 'css/vendor/'
 	},
 
+	svgvendor: {
+		src: 'node_modules/ikonate/build/sprite/ikonate.svg',
+		dest: pkg.project_settings.prefix + 'img/'
+	},
+
 	fonts: {
 		src:	'./src/fonts/**/*',
 		dest:	pkg.project_settings.prefix + 'fonts/'
@@ -119,7 +124,7 @@ var settings = {
 	images: {
 		src:	'./src/img/**/*',
 		dest:	pkg.project_settings.prefix + 'img/',
-		options: [
+		options: [ 
 			$.imagemin.optipng ({ optimizationLevel: 5 }),
 			$.imagemin.svgo (svgoOptions)
 		]
@@ -209,6 +214,11 @@ gulp.task('cssvendor', function() {
 	;
 });
 
+gulp.task('svgvendor', function() {
+	return gulp.src(settings.svgvendor.src)
+		.pipe(gulp.dest(settings.svgvendor.dest))
+	;
+});
 
 
 gulp.task ('fonts', function () {
