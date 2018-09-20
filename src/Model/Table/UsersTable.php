@@ -5,6 +5,7 @@ use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
+use Cake\ORM\TableRegistry;
 
 /**
  * Users Model
@@ -12,7 +13,7 @@ use Cake\Validation\Validator;
  * @property \App\Model\Table\FeedsTable|\Cake\ORM\Association\HasMany $Feeds
  *
  * @method \App\Model\Entity\User get($primaryKey, $options = [])
- * @method \App\Model\Entity\User newEntity($data = null, array $options = [])
+ * @method \App\Model\Entity\User newEntity($data =  null, array $options = [])
  * @method \App\Model\Entity\User[] newEntities(array $data, array $options = [])
  * @method \App\Model\Entity\User|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
  * @method \App\Model\Entity\User|bool saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
@@ -91,4 +92,20 @@ class UsersTable extends Table {
 
         return $rules;
     }
+
+
+
+	public function getNewEpisodes($userId) {
+
+		$FeedsTable = TableRegistry::get('Feeds');
+		$query = $FeedsTable->find('all', [
+			'user_id' => $userId
+		])
+		->contain(['Episodes']);
+
+		$feeds = $query->all();
+
+		debug($feeds);
+		die();
+	}
 }

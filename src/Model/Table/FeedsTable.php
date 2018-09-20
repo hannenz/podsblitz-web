@@ -45,7 +45,11 @@ class FeedsTable extends Table {
         ]);
 
 		$this->hasMany('Episodes', [
-			'sort' => ['published' => 'DESC']
+			'sort' => [
+				'published' => 'DESC',
+			],
+			'limit' => 2
+
 		]);
     }
 

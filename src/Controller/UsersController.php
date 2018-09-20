@@ -15,7 +15,7 @@ class UsersController extends AppController {
 
 	public function initialize() {
 		parent::initialize();
-		$this->Auth->allow(['logout', 'add']);
+		$this->Auth->allow(['logout', 'add', 'view']);
 	}
 
     /**
@@ -23,8 +23,7 @@ class UsersController extends AppController {
      *
      * @return \Cake\Http\Response|void
      */
-    public function index()
-    {
+    public function index() {
         $users = $this->paginate($this->Users);
 
         $this->set(compact('users'));
@@ -37,11 +36,10 @@ class UsersController extends AppController {
      * @return \Cake\Http\Response|void
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function view($id = null)
-    {
-        $user = $this->Users->get($id, [
-            'contain' => ['Feeds']
-        ]);
+    public function view($id = null) {
+
+		$id = $this->Auth->user('id');
+		$this->Users->getNewEpisodes($id);
 
         $this->set('user', $user);
     }
