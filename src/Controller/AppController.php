@@ -49,7 +49,7 @@ class AppController extends Controller {
          * see https://book.cakephp.org/3.0/en/controllers/components/security.html
          */
         //$this->loadComponent('Security');
-		
+
 
 		$this->loadComponent('Auth', [
 			'authorize' => ['Controller'],
@@ -68,7 +68,17 @@ class AppController extends Controller {
 			'unauthorizedRedirect' => $this->referer()
 		]);
 
+		$this->Auth->redirectUrl([
+			'controller' => 'Users',
+			'action' => 'view'
+		]);
+
 		$this->Auth->allow(['display']);
+
+		$this->Auth->redirectUrl('/users/feed');
+
+		debug($this->Auth->redirectUrl());
+		die();
     }
 
 

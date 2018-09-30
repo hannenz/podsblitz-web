@@ -15,7 +15,7 @@ class UsersController extends AppController {
 
 	public function initialize() {
 		parent::initialize();
-		$this->Auth->allow(['logout', 'add', 'view']);
+		$this->Auth->allow(['logout', 'add', 'feed']);
 	}
 
     /**
@@ -38,11 +38,29 @@ class UsersController extends AppController {
      */
     public function view($id = null) {
 
+		// $id = $this->Auth->user('id');
+		// $this->Users->getNewEpisodes($id);
+        //
+        // $this->set('user', $user);
+    }
+
+
+
+    /**
+     * A user's aggregated feed of (new) episodes
+     *
+     * @return \Cake\Http\Response|void
+     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
+     */
+    public function feed($id = null) {
+
 		$id = $this->Auth->user('id');
 		$this->Users->getNewEpisodes($id);
 
         $this->set('user', $user);
     }
+
+
 
     /**
      * Add method
